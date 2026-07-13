@@ -8,6 +8,17 @@ import './Contact.css';
 
 const INITIAL_FORM = { name: '', email: '', message: '' };
 
+// Reads the `hubspotutk` cookie set by the HubSpot tracking script (see index.html).
+// Passing this as `hutk` in the submission context tells HubSpot the visitor is a
+// tracked, legitimate browsing session — without it, API submissions (especially
+// from a fresh production domain with no prior HubSpot cookie) are more likely to
+// be silently routed to HubSpot's spam-filtered submissions bucket instead of
+// creating a normal contact, even though the API still returns a 200 success.
+function getHubspotCookie() {
+  const match = document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/);
+  return match ? match[1] : undefined;
+}
+
 // From your HubSpot account: Settings > Marketing > Forms > (your form) > Embed code,
 // or the form's URL when editing it. Portal ID is your HubSpot account/hub ID.
 const HUBSPOT_PORTAL_ID = import.meta.env.VITE_HUBSPOT_PORTAL_ID;
@@ -64,6 +75,7 @@ function Contact() {
           context: {
             pageUri: window.location.href,
             pageName: document.title,
+            hutk: getHubspotCookie(),
           },
         }),
       });
