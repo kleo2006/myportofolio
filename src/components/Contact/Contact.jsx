@@ -14,6 +14,18 @@ const HUBSPOT_PORTAL_ID = import.meta.env.VITE_HUBSPOT_PORTAL_ID;
 const HUBSPOT_FORM_ID = import.meta.env.VITE_HUBSPOT_FORM_ID;
 const HUBSPOT_ENDPOINT = `https://api-eu1.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
 
+// Fails loudly at load time if the env vars didn't make it into the build,
+// instead of silently POSTing to ".../undefined/undefined" later.
+if (!HUBSPOT_PORTAL_ID || !HUBSPOT_FORM_ID) {
+  console.error(
+    '[Contact] Missing HubSpot env vars. VITE_HUBSPOT_PORTAL_ID:',
+    HUBSPOT_PORTAL_ID,
+    'VITE_HUBSPOT_FORM_ID:',
+    HUBSPOT_FORM_ID,
+    '— check Cloudflare Pages → Settings → Environment variables (Production scope), then redeploy.'
+  );
+}
+
 function Contact() {
   const [infoRef, infoVisible] = useScrollReveal();
   const [formRef, formVisible] = useScrollReveal({ threshold: 0.2 });
@@ -56,11 +68,19 @@ function Contact() {
         }),
       });
 
+      const responseBody = await response.json().catch(() => null);
+
       if (!response.ok) {
-        const errorBody = await response.json().catch(() => null);
-        throw new Error(errorBody?.message || 'HubSpot submission failed');
+        console.error(
+          '[Contact] HubSpot submission failed.',
+          'Status:', response.status,
+          'URL:', HUBSPOT_ENDPOINT,
+          'Response:', responseBody
+        );
+        throw new Error(responseBody?.message || `HubSpot returned ${response.status}`);
       }
 
+      console.log('[Contact] HubSpot submission succeeded:', responseBody);
       setStatus('success');
       setValues(INITIAL_FORM);
     } catch (error) {
