@@ -12,7 +12,7 @@ const INITIAL_FORM = { name: '', email: '', message: '' };
 // or the form's URL when editing it. Portal ID is your HubSpot account/hub ID.
 const HUBSPOT_PORTAL_ID = import.meta.env.VITE_HUBSPOT_PORTAL_ID;
 const HUBSPOT_FORM_ID = import.meta.env.VITE_HUBSPOT_FORM_ID;
-const HUBSPOT_ENDPOINT = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
+const HUBSPOT_ENDPOINT = `https://api-eu1.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
 
 function Contact() {
   const [infoRef, infoVisible] = useScrollReveal();
