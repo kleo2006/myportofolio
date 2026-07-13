@@ -146,6 +146,8 @@
   border: none;
   background: transparent;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1000;
 }
 
 .navbar__toggle span {
@@ -174,25 +176,32 @@
   }
 }
 
-/* ---------- Mobile menu panel ---------- */
+/* ---------- Mobile menu panel ----------
+   Fix: the previous version relied entirely on CSS custom properties
+   (--color-bg, --z-overlay, --nav-height-scrolled) with no fallback.
+   If any of those failed to resolve on mobile, `background` silently
+   fell back to transparent, letting the real page content show through
+   the "open" menu instead of a solid overlay. Every custom property
+   below now has an explicit fallback, and the panel covers the full
+   viewport (inset: 0) rather than offsetting from a variable nav height. */
 .navbar__mobile-menu {
   position: fixed;
-  top: var(--nav-height-scrolled);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: var(--z-overlay);
-  background: var(--color-bg);
-  padding: 1.5rem var(--space-1, 1.5rem) 2.5rem;
+  inset: 0;
+  z-index: 999;
+  background-color: var(--color-bg, #0b0f1a);
+  padding: calc(var(--nav-height, 64px) + 1.5rem) 1.5rem 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   transform: translateY(-8px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity var(--duration-med) var(--ease-out),
-    transform var(--duration-med) var(--ease-out), visibility var(--duration-med);
+  transition: opacity var(--duration-med, 0.3s) var(--ease-out, ease),
+    transform var(--duration-med, 0.3s) var(--ease-out, ease),
+    visibility var(--duration-med, 0.3s);
 }
 
 .navbar__mobile-menu--open {
@@ -205,15 +214,17 @@
 .navbar__mobile-menu ul {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 1rem 0.5rem;
+  gap: 0.35rem;
+  padding: 0;
+  margin: auto 0;
 }
 
 .navbar__mobile-menu li {
+  list-style: none;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity var(--duration-med) var(--ease-out),
-    transform var(--duration-med) var(--ease-out);
+  transition: opacity var(--duration-med, 0.3s) var(--ease-out, ease),
+    transform var(--duration-med, 0.3s) var(--ease-out, ease);
 }
 
 .navbar__mobile-menu--open li {
@@ -224,17 +235,18 @@
 .navbar__mobile-menu a {
   display: block;
   font-family: var(--font-display);
-  font-size: var(--fs-lg);
+  font-size: 1.75rem;
   font-weight: 600;
-  padding: 0.6rem 0.5rem;
-  border-bottom: 1px solid var(--color-border);
+  color: var(--color-ink, #fff);
+  padding: 0.75rem 0.25rem;
 }
 
 .navbar__mobile-footer {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  padding: 0 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.12));
 }
 
 .navbar__mobile-cta {
