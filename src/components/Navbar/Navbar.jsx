@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import { NAV_LINKS } from '../../data/navLinks';
 import { SITE_CONFIG } from '../../data/siteConfig';
 import { useScrollPosition } from '../../hooks/useScrollPosition';
@@ -12,11 +12,34 @@ function Navbar() {
   const activeId = useActiveSection(NAV_LINKS.map((link) => link.href));
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollYRef = useRef(0);
 
   // Lock body scroll while the mobile menu is open.
+  // Plain `overflow: hidden` on body is unreliable on iOS Safari (it still
+  // allows rubber-band scrolling behind fixed elements), so we additionally
+  // pin the body in place with `position: fixed` and restore the exact
+  // scroll offset when the menu closes.
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    if (isMenuOpen) {
+      scrollYRef.current = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollYRef.current);
+    }
     return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
       document.body.style.overflow = '';
     };
   }, [isMenuOpen]);
@@ -29,7 +52,15 @@ function Navbar() {
     return () => mq.removeEventListener('change', handleChange);
   }, []);
 
-  const handleLinkClick = () => setIsMenuOpen(false);
+  // Close on Escape for keyboard users.
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+    const handleKey = (e) => e.key === 'Escape' && setIsMenuOpen(false);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isMenuOpen]);
+
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className={`navbar ${isScrolled ? 'navbar--scrolled' : ''}`}>
@@ -75,33 +106,49 @@ function Navbar() {
         </button>
       </nav>
 
+      {/* Dimmed backdrop over the remaining page — tapping it closes the panel */}
+      <div
+        className={`navbar__backdrop ${isMenuOpen ? 'navbar__backdrop--visible' : ''}`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
       <div
         id="mobile-menu"
         className={`navbar__mobile-menu ${
           isMenuOpen ? 'navbar__mobile-menu--open' : ''
         }`}
       >
+        <div className="navbar__mobile-logo">
+          <span className="navbar__mobile-logo-mark">{SITE_CONFIG.initials}</span>
+          <span className="navbar__mobile-logo-text">
+            Kleo<span>Fili</span>
+          </span>
+        </div>
+
         <ul>
           {NAV_LINKS.map((link, index) => (
             <li
               key={link.href}
               style={{ transitionDelay: `${isMenuOpen ? index * 40 : 0}ms` }}
             >
-              <a href={link.href} onClick={handleLinkClick}>
+              <a
+                href={link.href}
+                onClick={closeMenu}
+                className={activeId === link.href ? 'is-active' : ''}
+              >
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
+
+        <a href="#contact" className="navbar__mobile-cta" onClick={closeMenu}>
+          Let&rsquo;s talk
+        </a>
+
         <div className="navbar__mobile-footer">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <a
-            href="#contact"
-            className="navbar__mobile-cta"
-            onClick={handleLinkClick}
-          >
-            Let&rsquo;s talk
-          </a>
         </div>
       </div>
     </header>
