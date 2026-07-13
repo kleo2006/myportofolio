@@ -1,0 +1,138 @@
+/*
+  Design tokens.
+  Palette, type, spacing and elevation live here so every component
+  pulls from the same system instead of hard-coding one-off values.
+*/
+:root {
+  /* ---------- Color ---------- */
+  --color-bg: #f8f7f4;
+  --color-bg-raised: #ffffff;
+  --color-ink: #14151c;
+  --color-ink-soft: #43454e;
+  --color-muted: #6f7178;
+  --color-border: #e6e4de;
+  --color-border-strong: #d3d0c7;
+
+  --color-accent: #3247d1;
+  --color-accent-ink: #202f8f;
+  --color-accent-soft: rgba(50, 71, 209, 0.09);
+  --color-accent-soft-strong: rgba(50, 71, 209, 0.17);
+
+  /* Warm secondary accent — used sparingly for one-off highlights,
+     never alongside the primary accent in the same element. */
+  --color-warm: #c1600c;
+  --color-warm-soft: rgba(193, 96, 12, 0.12);
+
+  --color-signal: #17ac6d;
+  --color-signal-soft: rgba(23, 172, 109, 0.13);
+
+  --color-glass: rgba(255, 255, 255, 0.66);
+  --color-glass-nav: rgba(248, 247, 244, 0.78);
+
+  /* Hairline highlight used on card top edges for a subtle premium lift */
+  --color-hairline: rgba(20, 21, 28, 0.06);
+
+  /* ---------- Type ---------- */
+  --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace;
+
+  --fs-xs: clamp(0.72rem, 0.7rem + 0.1vw, 0.8rem);
+  --fs-sm: clamp(0.85rem, 0.82rem + 0.15vw, 0.95rem);
+  --fs-base: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+  --fs-md: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  --fs-lg: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
+  --fs-xl: clamp(2.1rem, 1.7rem + 1.6vw, 3.1rem);
+  --fs-2xl: clamp(2.8rem, 2.1rem + 3vw, 4.6rem);
+
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.015em;
+
+  /* ---------- Layout ---------- */
+  --container-width: min(1240px, 92vw);
+  --nav-height: 4.75rem;
+  --nav-height-scrolled: 4rem;
+
+  /* ---------- Radius & elevation ---------- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Layered shadows: a tight contact shadow + a soft ambient falloff,
+     the way most refined UI (not a single flat drop-shadow) reads depth. */
+  --shadow-sm: 0 1px 1px rgba(20, 21, 28, 0.04),
+    0 1px 2px rgba(20, 21, 28, 0.05);
+  --shadow-md: 0 1px 2px rgba(20, 21, 28, 0.04),
+    0 3px 8px rgba(20, 21, 28, 0.05), 0 12px 24px -8px rgba(20, 21, 28, 0.1);
+  --shadow-lg: 0 2px 4px rgba(20, 21, 28, 0.04),
+    0 8px 16px -4px rgba(20, 21, 28, 0.06),
+    0 28px 56px -16px rgba(20, 21, 28, 0.16);
+
+  /* Two-tone fill + inner top highlight for solid "ink" buttons, so they
+     read as a considered surface rather than a flat color swatch. */
+  --btn-ink-fill: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-ink) 100%, white 10%),
+    var(--color-ink)
+  );
+  --btn-ink-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), var(--shadow-sm);
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 180ms;
+  --duration-med: 320ms;
+  --duration-slow: 560ms;
+
+  /* ---------- z-index scale ---------- */
+  --z-nav: 100;
+  --z-overlay: 90;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --nav-height: 5.25rem;
+  }
+}
+
+/*
+  Dark theme.
+  Same variable names, different values — every component that reads
+  from --color-* automatically re-themes with zero component changes.
+*/
+/*
+  Dark theme — a deliberate navy/blue tint (not neutral grey-black), so it
+  reads as "dark blue mode" rather than a generic inverted palette.
+  Same variable names as :root — every component re-themes automatically.
+*/
+[data-theme='dark'] {
+  --color-bg: #0a0e1a;
+  --color-bg-raised: #101527;
+  --color-ink: #eef1fb;
+  --color-ink-soft: #b9c0da;
+  --color-muted: #7c86ab;
+  --color-border: #1f2740;
+  --color-border-strong: #2c3654;
+
+  --color-accent: #5b7fff;
+  --color-accent-ink: #c7d4ff;
+  --color-accent-soft: rgba(91, 127, 255, 0.16);
+  --color-accent-soft-strong: rgba(91, 127, 255, 0.26);
+
+  --color-warm: #e0954a;
+  --color-warm-soft: rgba(224, 149, 74, 0.16);
+
+  --color-signal: #2be09f;
+  --color-signal-soft: rgba(43, 224, 159, 0.16);
+
+  --color-glass: rgba(16, 21, 39, 0.65);
+  --color-glass-nav: rgba(10, 14, 26, 0.78);
+
+  --color-hairline: rgba(140, 165, 255, 0.1);
+
+  --shadow-sm: 0 1px 2px rgba(2, 4, 14, 0.4);
+  --shadow-md: 0 8px 24px rgba(2, 4, 14, 0.45),
+    0 2px 6px rgba(2, 4, 14, 0.3);
+  --shadow-lg: 0 28px 60px rgba(2, 4, 14, 0.55),
+    0 8px 20px rgba(2, 4, 14, 0.35);
+}
