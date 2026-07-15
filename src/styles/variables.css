@@ -106,18 +106,18 @@
   Same variable names as :root — every component re-themes automatically.
 */
 [data-theme='dark'] {
-  --color-bg: #0a0e1a;
-  --color-bg-raised: #101527;
+  --color-bg: #05070c;
+  --color-bg-raised: #0d1017;
   --color-ink: #eef1fb;
   --color-ink-soft: #b9c0da;
   --color-muted: #7c86ab;
   --color-border: #1f2740;
   --color-border-strong: #2c3654;
 
-  --color-accent: #5b7fff;
-  --color-accent-ink: #c7d4ff;
-  --color-accent-soft: rgba(91, 127, 255, 0.16);
-  --color-accent-soft-strong: rgba(91, 127, 255, 0.26);
+  --color-accent: #4f8cff;
+  --color-accent-ink: #c9dcff;
+  --color-accent-soft: rgba(79, 140, 255, 0.16);
+  --color-accent-soft-strong: rgba(79, 140, 255, 0.26);
 
   --color-warm: #e0954a;
   --color-warm-soft: rgba(224, 149, 74, 0.16);
@@ -125,14 +125,14 @@
   --color-signal: #2be09f;
   --color-signal-soft: rgba(43, 224, 159, 0.16);
 
-  --color-glass: rgba(16, 21, 39, 0.65);
-  --color-glass-nav: rgba(10, 14, 26, 0.78);
+  --color-glass: rgba(13, 16, 23, 0.65);
+  --color-glass-nav: rgba(5, 7, 12, 0.78);
 
-  --color-hairline: rgba(140, 165, 255, 0.1);
+  --color-hairline: rgba(122, 239, 255, 0.1);
 
-  --shadow-sm: 0 1px 2px rgba(2, 4, 14, 0.4);
-  --shadow-md: 0 8px 24px rgba(2, 4, 14, 0.45),
-    0 2px 6px rgba(2, 4, 14, 0.3);
-  --shadow-lg: 0 28px 60px rgba(2, 4, 14, 0.55),
-    0 8px 20px rgba(2, 4, 14, 0.35);
+  --shadow-sm: 0 1px 2px rgba(3, 4, 8, 0.4);
+  --shadow-md: 0 8px 24px rgba(3, 4, 8, 0.45),
+    0 2px 6px rgba(3, 4, 8, 0.3);
+  --shadow-lg: 0 28px 60px rgba(3, 4, 8, 0.55),
+    0 8px 20px rgba(3, 4, 8, 0.35);
 }

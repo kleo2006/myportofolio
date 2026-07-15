@@ -12,14 +12,24 @@
  * `.cinematic-bg` itself; the light block overrides them.
  *
  * Layers (back to front):
- *   base    -> deep gradient wash
- *   aurora  -> 3 soft drifting color blooms
- *   mesh    -> subtle multi-point gradient mesh, mouse/scroll reactive
- *   grid    -> faint perspective grid line
- *   glass   -> 2 large soft-edged glass panels for depth
- *   streak  -> 2 diagonal light streaks that sweep occasionally
- *   canvas  -> particle field (JS-driven, see component)
- *   vignette-> edge treatment to focus the viewport center
+ *   base    -> 4-stop cinematic wash (Foundation, ~75% of the scene)
+ *   aurora  -> 3 hierarchical color blooms, each with its own blur/opacity:
+ *              electric-blue hero glow (Primary Glow, tightest/brightest),
+ *              violet atmospheric bloom (Ambient Glow, largest/softest,
+ *              deliberately the quietest of the three),
+ *              cyan reflected light (Secondary Glow, mid blur/opacity)
+ *   mesh    -> subtle multi-point gradient mesh (Reflection Glow),
+ *              mouse/scroll reactive
+ *   grid    -> faint perspective grid line, tinted with the primary blue
+ *   glass   -> 2 large soft-edged glass panels (Glass Glow) for depth;
+ *              reflections inherit a warm-white core with a cyan-tinted edge
+ *   streak  -> 2 diagonal light streaks (Bloom Glow) that sweep occasionally
+ *   canvas  -> particle field (Particle Glow, JS-driven, see component)
+ *   vignette-> edge treatment (Ambient Glow) to focus the viewport center
+ *
+ * Color hierarchy target: ~75% dark foundation, ~15% electric blue,
+ * ~6% cyan, ~3% violet, ~1% warm-white highlights — dark first, colorful
+ * second. No two glow layers share identical blur/opacity/falloff.
  */
 
 .cinematic-bg {
@@ -36,76 +46,116 @@
   --my: 0.5;
   --sc: 0;
 
-  /* ---- Theme tokens: DARK (default) ---- */
-  --cine-base-1: #10142b;
-  --cine-base-2: #0a0c1c;
-  --cine-base-3: #05060f;
+  /* ---- Theme tokens: DARK (default) ----
+     Foundation: a 4-value tonal ladder rather than one flat near-black,
+     so the base itself carries depth before any glow is added. */
+  --cine-base-1: #0c1118;
+  --cine-base-2: #090c12;
+  --cine-base-3: #06080d;
+  --cine-base-4: #040507;
 
-  --cine-aurora-a: rgba(139, 178, 255, 0.55);
-  --cine-aurora-b: rgba(167, 139, 250, 0.5);
-  --cine-aurora-c: rgba(34, 211, 238, 0.4);
-  --cine-aurora-opacity: 0.45;
-  --cine-aurora-blur: 90px;
+  /* Primary Glow — electric blue, hero illumination. Tightest blur,
+     highest opacity of the three aurora layers. */
+  --cine-aurora-a: rgba(90, 168, 255, 0.5);
+  --cine-aurora-opacity-a: 0.44;
+  --cine-aurora-blur-a: 84px;
 
-  --cine-mesh-1: rgba(139, 178, 255, 0.25);
-  --cine-mesh-2: rgba(167, 139, 250, 0.22);
-  --cine-mesh-3: rgba(34, 211, 238, 0.18);
-  --cine-mesh-opacity: 0.35;
+  /* Ambient Glow — violet, distant atmosphere only. Largest blur,
+     lowest opacity: it should be felt, not seen. */
+  --cine-aurora-b: rgba(154, 137, 255, 0.3);
+  --cine-aurora-opacity-b: 0.22;
+  --cine-aurora-blur-b: 128px;
+
+  /* Secondary Glow — cyan, reflected/fresh light. Sits between the two
+     above in both blur and opacity. */
+  --cine-aurora-c: rgba(109, 235, 255, 0.32);
+  --cine-aurora-opacity-c: 0.3;
+  --cine-aurora-blur-c: 102px;
+
+  /* Reflection Glow — mesh gradient, glass/edge lighting */
+  --cine-mesh-1: rgba(90, 168, 255, 0.19);
+  --cine-mesh-2: rgba(109, 235, 255, 0.13);
+  --cine-mesh-3: rgba(139, 124, 255, 0.08);
+  --cine-mesh-opacity: 0.3;
   --cine-mesh-blend: screen;
 
-  --cine-grid-line: rgba(139, 178, 255, 0.06);
-  --cine-grid-opacity: 0.5;
+  /* Ambient Glow — grid, tinted with the primary blue, kept faint */
+  --cine-grid-line: rgba(108, 192, 255, 0.045);
+  --cine-grid-opacity: 0.4;
 
-  --cine-glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
-  --cine-glass-border: rgba(255, 255, 255, 0.06);
-  --cine-glass-opacity: 0.5;
+  /* Glass Glow — inherits the surrounding cool light: a faint warm-white
+     core with a cyan-tinted edge, rather than a fixed flat color. */
+  --cine-glass-fill: linear-gradient(
+    135deg,
+    rgba(248, 250, 252, 0.05),
+    rgba(130, 243, 255, 0.022) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  --cine-glass-border: rgba(99, 179, 255, 0.09);
+  --cine-glass-opacity: 0.46;
 
-  --cine-streak: rgba(255, 255, 255, 0.35);
-  --cine-streak-peak: 0.5;
+  /* Bloom Glow — light streaks, the one place pure warm-white appears */
+  --cine-streak: rgba(244, 247, 251, 0.36);
+  --cine-streak-peak: 0.4;
 
-  --cine-particles-opacity: 0.9;
+  /* Particle Glow */
+  --cine-particles-opacity: 0.8;
 
+  /* Ambient Glow — vignette, anchored to the deepest foundation value */
   --cine-vignette: radial-gradient(
     120% 90% at 50% 45%,
-    transparent 40%,
-    rgba(2, 3, 8, 0.55) 100%
+    transparent 42%,
+    rgba(4, 5, 7, 0.6) 100%
   );
 }
 
-/* ---- Theme tokens: LIGHT ---- */
+/* ---- Theme tokens: LIGHT ----
+   Same hierarchy, same hues, just re-balanced for a bright neutral-white
+   foundation so both themes read as one continuous brand system. */
 html[data-theme='light'] .cinematic-bg {
-  --cine-base-1: #f6f8fd;
-  --cine-base-2: #eef1fb;
-  --cine-base-3: #e3e8f7;
+  --cine-base-1: #f8fafc;
+  --cine-base-2: #eef3ff;
+  --cine-base-3: #e6edfb;
+  --cine-base-4: #dfe8f8;
 
-  --cine-aurora-a: rgba(129, 140, 248, 0.32);
-  --cine-aurora-b: rgba(244, 114, 182, 0.24);
-  --cine-aurora-c: rgba(45, 212, 191, 0.24);
-  --cine-aurora-opacity: 0.55;
-  --cine-aurora-blur: 100px;
+  --cine-aurora-a: rgba(90, 168, 255, 0.32);
+  --cine-aurora-opacity-a: 0.48;
+  --cine-aurora-blur-a: 92px;
 
-  --cine-mesh-1: rgba(99, 102, 241, 0.14);
-  --cine-mesh-2: rgba(236, 72, 153, 0.12);
-  --cine-mesh-3: rgba(13, 148, 136, 0.1);
-  --cine-mesh-opacity: 0.5;
+  --cine-aurora-b: rgba(154, 137, 255, 0.2);
+  --cine-aurora-opacity-b: 0.18;
+  --cine-aurora-blur-b: 136px;
+
+  --cine-aurora-c: rgba(86, 230, 255, 0.26);
+  --cine-aurora-opacity-c: 0.32;
+  --cine-aurora-blur-c: 110px;
+
+  --cine-mesh-1: rgba(90, 168, 255, 0.13);
+  --cine-mesh-2: rgba(86, 230, 255, 0.1);
+  --cine-mesh-3: rgba(139, 124, 255, 0.07);
+  --cine-mesh-opacity: 0.38;
   --cine-mesh-blend: multiply;
 
-  --cine-grid-line: rgba(67, 56, 202, 0.06);
-  --cine-grid-opacity: 0.4;
+  --cine-grid-line: rgba(63, 108, 214, 0.06);
+  --cine-grid-opacity: 0.34;
 
-  --cine-glass-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.05));
-  --cine-glass-border: rgba(67, 56, 202, 0.08);
-  --cine-glass-opacity: 0.6;
+  --cine-glass-fill: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(130, 243, 255, 0.045) 100%
+  );
+  --cine-glass-border: rgba(90, 168, 255, 0.09);
+  --cine-glass-opacity: 0.52;
 
-  --cine-streak: rgba(99, 102, 241, 0.28);
-  --cine-streak-peak: 0.35;
+  --cine-streak: rgba(90, 168, 255, 0.24);
+  --cine-streak-peak: 0.28;
 
-  --cine-particles-opacity: 0.8;
+  --cine-particles-opacity: 0.7;
 
   --cine-vignette: radial-gradient(
     120% 90% at 50% 45%,
     transparent 55%,
-    rgba(148, 163, 209, 0.28) 100%
+    rgba(191, 206, 235, 0.28) 100%
   );
 }
 
@@ -120,8 +170,9 @@ html[data-theme='light'] .cinematic-bg {
     radial-gradient(
       120% 90% at calc(50% + (var(--mx) - 0.5) * 6%) calc(20% + var(--sc) * 10%),
       var(--cine-base-1) 0%,
-      var(--cine-base-2) 45%,
-      var(--cine-base-3) 100%
+      var(--cine-base-2) 38%,
+      var(--cine-base-3) 72%,
+      var(--cine-base-4) 100%
     );
   transition: background 500ms ease;
 }
@@ -137,8 +188,6 @@ html[data-theme='light'] .cinematic-bg {
   max-width: 900px;
   max-height: 900px;
   border-radius: 50%;
-  filter: blur(var(--cine-aurora-blur));
-  opacity: var(--cine-aurora-opacity);
   will-change: transform;
   transition: opacity 500ms ease, filter 500ms ease;
 }
@@ -147,6 +196,8 @@ html[data-theme='light'] .cinematic-bg {
   top: -15%;
   left: -10%;
   background: radial-gradient(circle at center, var(--cine-aurora-a), transparent 70%);
+  filter: blur(var(--cine-aurora-blur-a));
+  opacity: var(--cine-aurora-opacity-a);
   transform: translate3d(calc((var(--mx) - 0.5) * -30px), calc((var(--my) - 0.5) * -30px), 0);
   animation: aurora-drift-a 26s ease-in-out infinite;
 }
@@ -155,6 +206,8 @@ html[data-theme='light'] .cinematic-bg {
   bottom: -20%;
   right: -10%;
   background: radial-gradient(circle at center, var(--cine-aurora-b), transparent 70%);
+  filter: blur(var(--cine-aurora-blur-b));
+  opacity: var(--cine-aurora-opacity-b);
   transform: translate3d(calc((var(--mx) - 0.5) * 24px), calc((var(--my) - 0.5) * 24px), 0);
   animation: aurora-drift-b 32s ease-in-out infinite;
 }
@@ -165,6 +218,8 @@ html[data-theme='light'] .cinematic-bg {
   width: 45vw;
   height: 45vw;
   background: radial-gradient(circle at center, var(--cine-aurora-c), transparent 70%);
+  filter: blur(var(--cine-aurora-blur-c));
+  opacity: var(--cine-aurora-opacity-c);
   transform: translate3d(calc((var(--mx) - 0.5) * 18px), calc((var(--my) - 0.5) * -18px), 0);
   animation: aurora-drift-c 40s ease-in-out infinite;
 }
@@ -324,7 +379,13 @@ html[data-theme='light'] .cinematic-bg {
   .cinematic-bg__glass--b {
     display: none;
   }
-  .cinematic-bg__aurora {
-    filter: blur(60px);
+  .cinematic-bg__aurora--a {
+    filter: blur(calc(var(--cine-aurora-blur-a) * 0.7));
+  }
+  .cinematic-bg__aurora--b {
+    filter: blur(calc(var(--cine-aurora-blur-b) * 0.7));
+  }
+  .cinematic-bg__aurora--c {
+    filter: blur(calc(var(--cine-aurora-blur-c) * 0.7));
   }
 }

@@ -22,20 +22,23 @@ import './CinematicBackground.css';
  * swapping the particle color layers here in JS.
  */
 
-// Dark theme: saturated, glowy particles against a near-black wash.
+// Dark theme: particles follow the same luxury hierarchy as the aurora —
+// electric blue leads, cyan adds fresh near-field sparkle, violet stays a
+// rare atmospheric accent (~3%, not 5%), and a handful of warm-white glints
+// (~1% of the field) carry the "premium bloom" highlight.
 const PARTICLE_LAYERS_DARK = [
-  { count: 46, minR: 0.5, maxR: 1.3, speed: 0.05, depth: 0.25, rgb: '139,178,255', alpha: [0.2, 0.55] }, // far, electric blue
-  { count: 28, minR: 1.1, maxR: 2.2, speed: 0.11, depth: 0.55, rgb: '167,139,250', alpha: [0.2, 0.55] }, // mid, violet
-  { count: 16, minR: 1.7, maxR: 3.4, speed: 0.2, depth: 1, rgb: '34,211,238', alpha: [0.2, 0.55] },      // near, cyan
+  { count: 46, minR: 0.5, maxR: 1.3, speed: 0.05, depth: 0.25, rgb: '90,168,255', alpha: [0.18, 0.5] },   // far, electric blue (primary)
+  { count: 16, minR: 1.1, maxR: 2.1, speed: 0.11, depth: 0.55, rgb: '154,137,255', alpha: [0.1, 0.28] },  // mid, violet (rare, quiet)
+  { count: 16, minR: 1.7, maxR: 3.4, speed: 0.2, depth: 1, rgb: '109,235,255', alpha: [0.18, 0.48] },     // near, cyan (secondary)
+  { count: 5, minR: 1.2, maxR: 2.2, speed: 0.14, depth: 0.8, rgb: '248,250,252', alpha: [0.1, 0.26] },    // rare, warm-white glints
 ];
 
-// Light theme: deeper, muted tones at lower alpha so dots read as soft
-// ink/watercolor flecks against a bright wash instead of a bright-on-white
-// glare.
+// Light theme: same hue family, deeper and more muted so dots read as soft
+// ink flecks against a bright wash instead of a bright-on-white glare.
 const PARTICLE_LAYERS_LIGHT = [
-  { count: 40, minR: 0.5, maxR: 1.2, speed: 0.05, depth: 0.25, rgb: '99,102,241', alpha: [0.1, 0.28] },  // far, indigo
-  { count: 24, minR: 1.0, maxR: 2.0, speed: 0.1, depth: 0.55, rgb: '236,72,153', alpha: [0.08, 0.22] },  // mid, rose
-  { count: 14, minR: 1.5, maxR: 3.0, speed: 0.18, depth: 1, rgb: '13,148,136', alpha: [0.1, 0.26] },     // near, teal
+  { count: 40, minR: 0.5, maxR: 1.2, speed: 0.05, depth: 0.25, rgb: '90,168,255', alpha: [0.1, 0.26] },   // far, electric blue
+  { count: 16, minR: 1.0, maxR: 1.9, speed: 0.1, depth: 0.55, rgb: '154,137,255', alpha: [0.06, 0.16] },  // mid, violet
+  { count: 14, minR: 1.5, maxR: 3.0, speed: 0.18, depth: 1, rgb: '86,230,255', alpha: [0.09, 0.22] },     // near, cyan
 ];
 
 function getParticleBudget(width) {
