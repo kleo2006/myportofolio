@@ -12,6 +12,10 @@ import { noiseGLSL } from '../gl/noiseGLSL.js';
 export function createAtmosphere({ palette, count = 4 }) {
   const group = new THREE.Group();
   const volumes = [];
+  // Same theme-tracking as orbitals.js — this haze is already very low
+  // opacity by design (0.05–0.10), so in light mode it needs a real lift
+  // to read as anything more than a rounding error against the page bg.
+  let glowBoost = palette.glowBoost ?? 1;
 
   const colorSlots = [palette.accent, palette.violet, palette.cyan];
 
@@ -86,7 +90,7 @@ export function createAtmosphere({ palette, count = 4 }) {
   function update({ time, camera, introProgress }) {
     for (const v of volumes) {
       v.uniforms.uTime.value = time;
-      v.uniforms.uOpacity.value = v.targetOpacity * introProgress;
+      v.uniforms.uOpacity.value = Math.min(0.4, v.targetOpacity * introProgress * glowBoost);
 
       // Gentle independent drift so the haze pools shift position without
       // ever reading as a repeating loop.
@@ -99,6 +103,7 @@ export function createAtmosphere({ palette, count = 4 }) {
   }
 
   function setPalette(p) {
+    glowBoost = p.glowBoost ?? 1;
     const colors = [p.accent, p.violet, p.cyan];
     volumes.forEach((v, i) => v.uniforms.uColor.value.copy(colors[i % colors.length]));
   }

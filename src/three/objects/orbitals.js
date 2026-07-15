@@ -11,6 +11,10 @@ import * as THREE from 'three';
 export function createOrbitalSystem({ palette, count = 3 }) {
   const group = new THREE.Group();
   const rings = [];
+  // Rings/satellites render at a flat opacity that ignores theme entirely
+  // unless we track this ourselves — kept in sync via setPalette() below,
+  // including the very first call palette.js fires on construction.
+  let glowBoost = palette.glowBoost ?? 1;
 
   const colorSlots = [palette.accent, palette.cyan, palette.violet, palette.offwhite];
 
@@ -160,7 +164,7 @@ export function createOrbitalSystem({ palette, count = 3 }) {
       const head = time * r.speed + r.phase;
       r.lineUniforms.uHead.value = head;
       r.satUniforms.uHead.value = head;
-      const o = introProgress * 0.85;
+      const o = Math.min(1, introProgress * 0.85 * glowBoost);
       r.lineUniforms.uOpacity.value = o;
       r.satUniforms.uOpacity.value = o;
       r.ringGroup.rotation.y += r.spinSpeed;
@@ -168,6 +172,7 @@ export function createOrbitalSystem({ palette, count = 3 }) {
   }
 
   function setPalette(p) {
+    glowBoost = p.glowBoost ?? 1;
     const colors = [p.accent, p.cyan, p.violet, p.offwhite];
     rings.forEach((r, i) => {
       const c = colors[i % colors.length];

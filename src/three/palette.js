@@ -80,9 +80,15 @@ export function getPalette() {
     auroraB: violet,
     auroraC: cyan,
     // Additive layers read as much stronger in dark mode — dial exposure
-    // down there and lift it slightly in light mode where the white
-    // canvas swallows subtle glows.
-    exposure: isDark ? 0.8 : 0.5,
+    // down there and lift it in light mode where the light canvas swallows
+    // subtle glows. (Raised from 0.5 — at that level the particle field was
+    // barely legible against the light background.)
+    exposure: isDark ? 0.8 : 0.68,
+    // Orbitals and atmospheric haze render at a fixed opacity regardless
+    // of theme (they don't read uExposure), so on their own they'd stay
+    // exactly as faint in light mode as in dark. This gives them their
+    // own multiplier to compensate.
+    glowBoost: isDark ? 1 : 1.55,
   };
 }
 

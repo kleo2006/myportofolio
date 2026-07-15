@@ -129,10 +129,20 @@ export class CinematicBackground {
     this.atmosphere = createAtmosphere({ palette, count: this.preset.atmosphere });
     scene.add(this.atmosphere.group);
 
-    this.stars = createStarfield({ count: this.preset.stars, radius: 420, color: palette.ink });
+    this.stars = createStarfield({
+      count: this.preset.stars,
+      radius: 420,
+      color: palette.ink,
+      boost: palette.glowBoost,
+    });
     scene.add(this.stars.points);
 
-    this.dust = createDust({ count: this.preset.dust, spread: 70, color: palette.accent });
+    this.dust = createDust({
+      count: this.preset.dust,
+      spread: 70,
+      color: palette.accent,
+      boost: palette.glowBoost,
+    });
     this.dust.points.position.z = -10;
     scene.add(this.dust.points);
 
@@ -206,6 +216,8 @@ export class CinematicBackground {
     this.flowField.setPalette(palette);
     this.orbitals.setPalette(palette);
     this.atmosphere.setPalette(palette);
+    this.stars.setBoost(palette.glowBoost);
+    this.dust.setBoost(palette.glowBoost);
     if (this.reducedMotion) {
       this.scene.fog.color.copy(palette.fog);
       this._fogTween = null;
@@ -334,7 +346,12 @@ export class CinematicBackground {
     this.dust.update(delta);
 
     if (this.bloom) {
-      this.bloom.strength = 0.36 + this.introProgress * 0.1 + this.scroll * 0.16;
+      // Light mode now carries brighter particles/orbitals/haze (see
+      // palette.js glowBoost), so bloom gets a small matching lift —
+      // otherwise the extra brightness reads as flatter, un-glowing color
+      // rather than genuine light.
+      const themeBloom = this.palette?.isDark ? 1 : 1.15;
+      this.bloom.strength = (0.36 + this.introProgress * 0.1 + this.scroll * 0.16) * themeBloom;
     }
     if (this.grade) {
       this.grade.uniforms.uTime.value = time;

@@ -18,9 +18,10 @@ function pointsMaterial({ size, opacity, color, sizeAttenuation = true }) {
  * opacity animated via a handful of trig terms on the CPU side per frame
  * (count is small enough that this is negligible).
  */
-export function createStarfield({ count = 500, radius = 400, color }) {
+export function createStarfield({ count = 500, radius = 400, color, boost = 1 }) {
   const positions = new Float32Array(count * 3);
   const phases = new Float32Array(count);
+  let currentBoost = boost;
 
   for (let i = 0; i < count; i++) {
     const r = radius * (0.6 + Math.random() * 0.4);
@@ -40,7 +41,11 @@ export function createStarfield({ count = 500, radius = 400, color }) {
   points.frustumCulled = false;
 
   function update(time) {
-    material.opacity = 0.35 + 0.15 * Math.sin(time * 0.4 + phases[0]);
+    material.opacity = Math.min(1, (0.35 + 0.15 * Math.sin(time * 0.4 + phases[0])) * currentBoost);
+  }
+
+  function setBoost(b) {
+    currentBoost = b;
   }
 
   function dispose() {
@@ -48,7 +53,7 @@ export function createStarfield({ count = 500, radius = 400, color }) {
     material.dispose();
   }
 
-  return { points, update, material, dispose };
+  return { points, update, material, setBoost, dispose };
 }
 
 /**
@@ -56,9 +61,10 @@ export function createStarfield({ count = 500, radius = 400, color }) {
  * gives the scene a foreground layer so the parallax reads as genuinely
  * three-dimensional rather than a single flat backdrop plane.
  */
-export function createDust({ count = 180, spread = 60, color }) {
+export function createDust({ count = 180, spread = 60, color, boost = 1 }) {
   const positions = new Float32Array(count * 3);
   const drift = new Float32Array(count * 3);
+  let currentBoost = boost;
 
   for (let i = 0; i < count; i++) {
     positions[i * 3] = (Math.random() - 0.5) * spread * 2;
@@ -73,7 +79,8 @@ export function createDust({ count = 180, spread = 60, color }) {
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-  const material = pointsMaterial({ size: 0.9, opacity: 0.22, color });
+  const baseOpacity = 0.22;
+  const material = pointsMaterial({ size: 0.9, opacity: baseOpacity * currentBoost, color });
   const points = new THREE.Points(geometry, material);
   points.frustumCulled = false;
 
@@ -87,10 +94,15 @@ export function createDust({ count = 180, spread = 60, color }) {
     geometry.attributes.position.needsUpdate = true;
   }
 
+  function setBoost(b) {
+    currentBoost = b;
+    material.opacity = Math.min(1, baseOpacity * currentBoost);
+  }
+
   function dispose() {
     geometry.dispose();
     material.dispose();
   }
 
-  return { points, update, material, dispose };
+  return { points, update, material, setBoost, dispose };
 }
