@@ -1,3 +1,7 @@
+.projects {
+  --section-accent: var(--color-warm);
+}
+
 .projects__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -19,7 +23,9 @@
 .project-card {
   display: flex;
   flex-direction: column;
-  background: var(--color-bg-raised);
+  background: var(--color-glass);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -168,13 +174,25 @@
 }
 
 .project-card__tech li {
+  --chip-color: var(--color-accent);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--color-muted);
-  border: 1px solid var(--color-border);
+  font-weight: 500;
+  color: var(--chip-color);
+  background: color-mix(in srgb, var(--chip-color) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
   padding: 0.25rem 0.6rem;
   border-radius: var(--radius-sm);
 }
+
+/* Four deliberate hues, repeating — never random, never more than the
+   signature spectrum already established by the section colors.
+   Fallback values added so a missing token never drops the whole
+   border/background declaration (color-mix breaks on an unset var). */
+.project-card__tech li:nth-child(4n + 1) { --chip-color: var(--color-accent, #00C2FF); }
+.project-card__tech li:nth-child(4n + 2) { --chip-color: var(--color-violet, #8B5CF6); }
+.project-card__tech li:nth-child(4n + 3) { --chip-color: var(--color-warm, #F59E0B); }
+.project-card__tech li:nth-child(4n + 4) { --chip-color: var(--color-signal, #17C978); }
 
 .project-card__actions {
   display: flex;
@@ -191,26 +209,42 @@
   border-radius: var(--radius-pill);
   transition: transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+    background-image var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
+/* ---------- Live demo (primary) ---------- */
 .project-card__btn--primary {
   background: var(--btn-ink-fill);
   box-shadow: var(--btn-ink-shadow);
   color: var(--color-bg);
 }
 
-.project-card__btn--primary:hover {
-  background: var(--color-accent);
+/* Explicit blue → purple gradient on hover, with a hard-coded fallback
+   so it never silently falls back to black if --gradient-signature
+   (or the tokens it's built from) is missing. */
+.project-card__btn--primary:hover,
+.project-card__btn--primary:focus-visible {
+  background: var(
+    --gradient-signature,
+    linear-gradient(135deg, #00c2ff, #8b5cf6)
+  );
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
+/* ---------- View code (ghost) ---------- */
 .project-card__btn--ghost {
   border: 1px solid var(--color-border-strong);
   color: var(--color-ink);
+  background: transparent;
 }
 
-.project-card__btn--ghost:hover {
-  border-color: var(--color-ink);
+.project-card__btn--ghost:hover,
+.project-card__btn--ghost:focus-visible {
+  border-color: var(--color-violet, #8b5cf6);
+  color: var(--color-violet, #8b5cf6);
+  background: color-mix(in srgb, var(--color-violet, #8b5cf6) 8%, transparent);
   transform: translateY(-1px);
 }

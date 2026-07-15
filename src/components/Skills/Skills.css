@@ -1,3 +1,7 @@
+.skills {
+  --section-accent: var(--color-violet);
+}
+
 .skills__grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -18,7 +22,9 @@
 
 .skill-card {
   position: relative;
-  background: var(--color-bg-raised);
+  background: var(--color-glass);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
@@ -28,6 +34,15 @@
     border-color var(--duration-med) var(--ease-out);
 }
 
+.skill-card {
+  --card-color: var(--color-violet);
+}
+
+.skill-card:nth-child(4n + 1) { --card-color: var(--color-accent); }
+.skill-card:nth-child(4n + 2) { --card-color: var(--color-violet); }
+.skill-card:nth-child(4n + 3) { --card-color: var(--color-warm); }
+.skill-card:nth-child(4n + 4) { --card-color: var(--color-signal); }
+
 .skill-card::before {
   content: '';
   position: absolute;
@@ -35,7 +50,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--color-accent), transparent 80%);
+  background: linear-gradient(90deg, var(--card-color), transparent 80%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--duration-med) var(--ease-out);
@@ -58,8 +73,8 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-md);
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: color-mix(in srgb, var(--card-color) 12%, transparent);
+  color: var(--card-color);
   margin-bottom: 1.25rem;
 }
 
@@ -105,5 +120,5 @@
 }
 
 .skill-card__dot--filled {
-  background: var(--color-accent);
+  background: var(--card-color);
 }

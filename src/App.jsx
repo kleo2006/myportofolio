@@ -6,11 +6,12 @@ import Projects from './components/Projects/Projects';
 import Experience from './components/Experience/Experience';
 import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
+import ThreeBackground from './components/ThreeBackground/ThreeBackground';
 
 function App() {
   return (
     <>
-      
+      <ThreeBackground />
       <Navbar />
       <main>
         <Hero />

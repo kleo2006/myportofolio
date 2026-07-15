@@ -104,10 +104,27 @@
   animation: pulse-ring 2.2s ease-out infinite;
 }
 
+/* The name carries the full signature spectrum — the single loud color
+   moment on the page, positioned where a recruiter's eye lands first.
+   Default state is solid, guaranteed-visible ink text; the gradient
+   clip is layered on top only inside an @supports block that checks
+   for the exact technique being used, so there's no browser/engine
+   combination where the name can end up invisible. */
 .hero__name {
   font-size: var(--fs-2xl);
   line-height: 1.02;
   margin-bottom: 0.6rem;
+  color: var(--color-ink);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .hero__name {
+    background: var(--gradient-signature, var(--color-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
 
 .hero__role {
@@ -146,29 +163,44 @@
   border-radius: var(--radius-pill);
   transition: transform var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out),
+    background-image var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out);
 }
 
+/* ---------- View projects (primary) ---------- */
 .hero__btn--primary {
   background: var(--btn-ink-fill);
   box-shadow: var(--btn-ink-shadow);
   color: var(--color-bg);
 }
 
-.hero__btn--primary:hover {
-  background: var(--color-accent);
+/* Explicit blue → purple gradient on hover, with a hard-coded fallback
+   so it never silently falls back to black if --gradient-signature
+   (or the tokens it's built from) is missing — same fix applied to
+   the Projects section buttons. */
+.hero__btn--primary:hover,
+.hero__btn--primary:focus-visible {
+  background: var(
+    --gradient-signature,
+    linear-gradient(135deg, #00c2ff, #8b5cf6)
+  );
+  color: #ffffff;
   transform: translateY(-2px);
 }
 
+/* ---------- Download CV (ghost) ---------- */
 .hero__btn--ghost {
   background: transparent;
   color: var(--color-ink);
   border: 1px solid var(--color-border-strong);
 }
 
-.hero__btn--ghost:hover {
-  border-color: var(--color-ink);
+.hero__btn--ghost:hover,
+.hero__btn--ghost:focus-visible {
+  border-color: var(--color-violet, #8b5cf6);
+  color: var(--color-violet, #8b5cf6);
+  background: color-mix(in srgb, var(--color-violet, #8b5cf6) 8%, transparent);
   transform: translateY(-2px);
 }
 
@@ -179,13 +211,21 @@
 }
 
 .hero__stack li {
+  --chip-color: var(--color-accent);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--color-muted);
-  border: 1px solid var(--color-border);
+  font-weight: 500;
+  color: var(--chip-color);
+  background: color-mix(in srgb, var(--chip-color) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
   padding: 0.3rem 0.65rem;
   border-radius: var(--radius-sm);
 }
+
+.hero__stack li:nth-child(4n + 1) { --chip-color: var(--color-accent, #00C2FF); }
+.hero__stack li:nth-child(4n + 2) { --chip-color: var(--color-violet, #8B5CF6); }
+.hero__stack li:nth-child(4n + 3) { --chip-color: var(--color-warm, #F59E0B); }
+.hero__stack li:nth-child(4n + 4) { --chip-color: var(--color-signal, #17C978); }
 
 /* ---------- Status panel (signature element) ---------- */
 .hero__panel {

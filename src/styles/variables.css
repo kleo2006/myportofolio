@@ -87,6 +87,31 @@
   /* ---------- z-index scale ---------- */
   --z-nav: 100;
   --z-overlay: 90;
+
+  /* ---------- Ambient background mesh ---------- */
+  /* Sits behind the Three.js canvas as the page's own base layer, so the
+     scene always has a considered backdrop to composite over — even
+     before WebGL finishes booting, or if it's unavailable. */
+  --mesh-bg: radial-gradient(
+      ellipse 70% 55% at 12% 8%,
+      var(--color-accent-soft) 0%,
+      transparent 60%
+    ),
+    radial-gradient(ellipse 60% 50% at 88% 18%, var(--color-warm-soft) 0%, transparent 55%),
+    radial-gradient(ellipse 65% 60% at 50% 100%, var(--color-signal-soft) 0%, transparent 60%),
+    var(--color-bg);
+
+  /* ---------- Cinematic background scene tokens ----------
+     Dedicated hues for the Three.js scene only — kept separate from the
+     UI accent system above so the scene can hold a cohesive "light as
+     color" palette (electric blue / soft cyan / muted violet / off-white)
+     regardless of which UI accent color a future theme picks. */
+  --scene-charcoal: #0b0d12;
+  --scene-navy: #0a0e1a;
+  --scene-electric-blue: #3a5cff;
+  --scene-cyan: #7fe0e8;
+  --scene-violet: #8b7bd8;
+  --scene-offwhite: #f4f2ec;
 }
 
 @media (min-width: 640px) {
@@ -135,4 +160,11 @@
     0 2px 6px rgba(3, 4, 8, 0.3);
   --shadow-lg: 0 28px 60px rgba(3, 4, 8, 0.55),
     0 8px 20px rgba(3, 4, 8, 0.35);
+
+  --scene-charcoal: #06070b;
+  --scene-navy: #050710;
+  --scene-electric-blue: #5b7fff;
+  --scene-cyan: #8fe9f0;
+  --scene-violet: #a48fe8;
+  --scene-offwhite: #f7f6f2;
 }

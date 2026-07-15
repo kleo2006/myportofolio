@@ -1,3 +1,7 @@
+.experience {
+  --section-accent: var(--color-signal);
+}
+
 .timeline {
   display: flex;
   flex-direction: column;
