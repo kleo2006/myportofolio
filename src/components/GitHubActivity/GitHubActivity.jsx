@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
-import './GithubActivity.css';
+import GitHubActivity from "../GitHubActivity/GitHubActivity";
+import "./GitHubActivity.css";
 
 const GITHUB_USERNAME = 'kleo2006';
 
