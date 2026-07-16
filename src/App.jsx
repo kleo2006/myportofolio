@@ -1,6 +1,8 @@
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
+import FAQ from './components/FAQ/FAQ';
 import About from './components/About/About';
+import Certificate from './components/Certificate/Certificate';
 import Skills from './components/Skills/Skills';
 import Projects from './components/Projects/Projects';
 import Experience from './components/Experience/Experience';
@@ -15,8 +17,10 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <Projects/>
+        <FAQ />
+        <Projects />
         <About />
+        <Certificate />
         <Skills />
         <Experience />
         <Contact />

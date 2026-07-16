@@ -1,8 +1,14 @@
 import { memo } from 'react';
 import { SITE_CONFIG } from '../../data/siteConfig';
-import { ABOUT_FACTS, CURRENTLY_LEARNING } from '../../data/about';
+import { CURRENTLY_LEARNING } from '../../data/about';
+import { PROJECTS } from '../../data/projects';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import './About.css';
+
+// Computed rather than hardcoded, so this never quietly goes stale as
+// projects are added or another year passes.
+const CAREER_START_YEAR = 2023;
+const yearsBuilding = new Date().getFullYear() - CAREER_START_YEAR;
 
 function About() {
   const [textRef, textVisible] = useScrollReveal();
@@ -62,19 +68,29 @@ function About() {
         <aside
           ref={panelRef}
           className={`about__panel reveal ${panelVisible ? 'reveal--visible' : ''}`}
-          aria-label="Quick facts"
+          aria-label="Snapshot"
         >
           <div className="about__avatar" aria-hidden="true">
             <span>{SITE_CONFIG.initials}</span>
           </div>
 
-          <dl className="about__facts">
-            {ABOUT_FACTS.map((fact) => (
-              <div className="about__fact" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
+          <dl className="about__stats">
+            <div className="about__stat">
+              <dt>Projects shipped</dt>
+              <dd>{PROJECTS.length}</dd>
+            </div>
+            <div className="about__stat">
+              <dt>Years building</dt>
+              <dd>{yearsBuilding}+</dd>
+            </div>
+            <div className="about__stat">
+              <dt>Core technologies</dt>
+              <dd>{SITE_CONFIG.stack.length}</dd>
+            </div>
+            <div className="about__stat about__stat--wide">
+              <dt>Client regions</dt>
+              <dd className="about__stat-text">Europe &amp; North America</dd>
+            </div>
           </dl>
         </aside>
       </div>

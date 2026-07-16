@@ -227,13 +227,13 @@
 .hero__stack li:nth-child(4n + 3) { --chip-color: var(--color-warm, #F59E0B); }
 .hero__stack li:nth-child(4n + 4) { --chip-color: var(--color-signal, #17C978); }
 
-/* ---------- Status panel (signature element) ---------- */
+/* ---------- Specialization panel (signature element) ---------- */
 .hero__panel {
   position: relative;
   background: var(--color-glass);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 1.6rem;
+  padding: 1.75rem;
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   box-shadow: var(--shadow-lg);
@@ -242,76 +242,53 @@
 }
 
 .hero__panel-head {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--color-ink-soft);
-  letter-spacing: 0.04em;
   padding-bottom: 1rem;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.25rem;
   border-bottom: 1px dashed var(--color-border-strong);
 }
 
-.hero__panel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-signal);
-  box-shadow: 0 0 0 4px var(--color-signal-soft);
-}
-
-.hero__panel-rows {
+.hero__panel-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin: 0 0 1.4rem;
+  gap: 1.3rem;
 }
 
-.hero__panel-row {
+.hero__panel-item {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
+}
+
+.hero__panel-dot {
+  --i: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 0.4rem;
+  flex-shrink: 0;
+  background: var(--color-accent);
+}
+
+.hero__panel-item:nth-child(4n + 1) .hero__panel-dot { background: var(--color-accent); }
+.hero__panel-item:nth-child(4n + 2) .hero__panel-dot { background: var(--color-violet); }
+.hero__panel-item:nth-child(4n + 3) .hero__panel-dot { background: var(--color-warm); }
+.hero__panel-item:nth-child(4n + 4) .hero__panel-dot { background: var(--color-signal); }
+
+.hero__panel-label {
   font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 0.3rem;
 }
 
-.hero__panel-row dt {
-  font-family: var(--font-mono);
-  color: var(--color-muted);
-  text-transform: uppercase;
+.hero__panel-description {
   font-size: var(--fs-xs);
-  letter-spacing: 0.04em;
-  padding-top: 0.15rem;
-}
-
-.hero__panel-row dd {
-  margin: 0;
-  text-align: right;
-  font-weight: 500;
-  max-width: 60%;
-}
-
-.hero__panel-stat {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.hero__panel-stat-value {
-  font-family: var(--font-display);
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-.hero__panel-stat-label {
-  font-size: var(--fs-xs);
+  line-height: 1.5;
   color: var(--color-muted);
-  font-family: var(--font-mono);
 }
 
 /* ---------- Scroll cue ---------- */
@@ -345,6 +322,52 @@
   .hero__scroll-cue {
     display: flex;
   }
+}
+
+/* ---------- Light-mode animation tuning ----------
+   Assumes the theme toggle sets [data-theme="light"] on <html> or
+   <body>. If your toggle uses a different attribute/class, swap the
+   selector below — everything else stays the same. These rules only
+   ADD contrast/motion on top of the existing rules above; nothing here
+   changes layout or position, and dark mode is completely untouched. */
+
+[data-theme='light'] .hero__grid {
+  opacity: 0.85;
+  background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-ink) 14%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-ink) 14%, transparent) 1px,
+      transparent 1px
+    );
+}
+
+[data-theme='light'] .hero__glow {
+  opacity: 0.9;
+  filter: blur(6px) saturate(160%);
+  animation: hero-glow-drift 9s var(--ease-out) infinite alternate;
+}
+
+[data-theme='light'] .hero__pulse::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  opacity: 0.35;
+  filter: blur(3px);
+}
+
+[data-theme='light'] .hero__pulse::after {
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--color-signal) 55%, transparent);
+}
+
+[data-theme='light'] .hero__content,
+[data-theme='light'] .hero__panel {
+  animation-name: hero-rise-light;
 }
 
 /* ---------- Keyframes ---------- */
@@ -384,5 +407,31 @@
     transform: scaleY(0.3);
     transform-origin: bottom;
     opacity: 0.4;
+  }
+}
+
+/* Light-mode only: a slow, subtle drift on the glow so it doesn't
+   read as a static sticker against a bright background. Small enough
+   travel distance that it never overlaps the content column. */
+@keyframes hero-glow-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-2%, 3%) scale(1.05);
+  }
+}
+
+/* Light-mode only: same rise-in as hero-rise, but with a bit more
+   travel distance, since motion reads as less pronounced against
+   high-key backgrounds than against dark ones. */
+@keyframes hero-rise-light {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

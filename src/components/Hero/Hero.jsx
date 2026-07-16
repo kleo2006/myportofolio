@@ -1,11 +1,9 @@
 import { memo } from 'react';
 import { SITE_CONFIG } from '../../data/siteConfig';
-import { useCountUp } from '../../hooks/useCountUp';
+import { FOCUS_AREAS } from '../../data/focusAreas';
 import './Hero.css';
 
 function Hero() {
-  const [projectCount, statRef] = useCountUp(12);
-
   return (
     <section id="top" className="hero">
       <div className="hero__backdrop" aria-hidden="true">
@@ -51,31 +49,26 @@ function Hero() {
           </ul>
         </div>
 
-        <aside className="hero__panel" aria-label="Current status">
+        <aside className="hero__panel" aria-label="What I specialize in">
           <div className="hero__panel-head">
-            <span className="hero__panel-dot" aria-hidden="true" />
-            <span>STATUS: ONLINE</span>
+            <span>WHAT I SPECIALIZE IN</span>
           </div>
 
-          <dl className="hero__panel-rows">
-            <div className="hero__panel-row">
-              <dt>location</dt>
-              <dd>{SITE_CONFIG.location}</dd>
-            </div>
-            <div className="hero__panel-row">
-              <dt>building</dt>
-              <dd>{SITE_CONFIG.currentlyBuilding}</dd>
-            </div>
-            <div className="hero__panel-row">
-              <dt>stack</dt>
-              <dd>{SITE_CONFIG.stack.slice(0, 3).join(' · ')}</dd>
-            </div>
-          </dl>
-
-          <div className="hero__panel-stat" ref={statRef}>
-            <span className="hero__panel-stat-value">{projectCount}+</span>
-            <span className="hero__panel-stat-label">shipped projects</span>
-          </div>
+          <ul className="hero__panel-list">
+            {FOCUS_AREAS.map((area, index) => (
+              <li className="hero__panel-item" key={area.label}>
+                <span
+                  className="hero__panel-dot"
+                  style={{ '--i': index }}
+                  aria-hidden="true"
+                />
+                <div>
+                  <p className="hero__panel-label">{area.label}</p>
+                  <p className="hero__panel-description">{area.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </aside>
       </div>
 

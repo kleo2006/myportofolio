@@ -58,10 +58,12 @@
   color: var(--color-accent);
 }
 
-/* ---------- Facts panel ---------- */
+/* ---------- Snapshot panel ---------- */
 .about__panel {
   position: relative;
-  background: var(--color-bg-raised);
+  background: var(--color-glass);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 2rem;
@@ -103,34 +105,37 @@
   margin-bottom: 1.75rem;
 }
 
-.about__facts {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
+.about__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem 1rem;
 }
 
-.about__fact {
-  padding-bottom: 1.1rem;
-  border-bottom: 1px dashed var(--color-border-strong);
+.about__stat--wide {
+  grid-column: 1 / -1;
+  padding-top: 1.1rem;
+  border-top: 1px dashed var(--color-border-strong);
 }
 
-.about__fact:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.about__fact dt {
+.about__stat dt {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-muted);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
 
-.about__fact dd {
+.about__stat dd {
   margin: 0;
-  font-size: var(--fs-sm);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
   color: var(--color-ink);
+}
+
+.about__stat-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
 }

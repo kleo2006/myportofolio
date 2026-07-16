@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { EXPERIENCE } from '../../data/experience';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
+import GithubActivity from '../GithubActivity/GithubActivity';
 import './Experience.css';
 
 function TimelineItem({ entry, index, isLast }) {
@@ -44,16 +45,26 @@ function Experience() {
           </p>
         </div>
 
-        <ol className="timeline">
-          {EXPERIENCE.map((entry, index) => (
-            <TimelineItem
-              key={entry.role}
-              entry={entry}
-              index={index}
-              isLast={index === EXPERIENCE.length - 1}
-            />
-          ))}
-        </ol>
+        <div className="experience__inner">
+          <ol className="timeline">
+            {EXPERIENCE.map((entry, index) => (
+              <TimelineItem
+                key={entry.role}
+                entry={entry}
+                index={index}
+                isLast={index === EXPERIENCE.length - 1}
+              />
+            ))}
+          </ol>
+
+          <GithubActivity />
+        </div>
+
+        <div className="experience__cta-row">
+          <a href="#contact" className="experience__cta">
+            Start a project
+          </a>
+        </div>
       </div>
     </section>
   );

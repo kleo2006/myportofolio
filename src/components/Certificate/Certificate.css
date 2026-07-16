@@ -1,0 +1,179 @@
+.certificate {
+  --section-accent: var(--color-signal);
+}
+
+.certificate__panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 760px) {
+  .certificate__panel {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+}
+
+/* ---------- Media side ---------- */
+.certificate__media {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.certificate__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.certificate__verified {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+  background: color-mix(in srgb, var(--color-signal) 78%, black 10%);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-signal) 45%, transparent);
+}
+
+.certificate__badge-icon {
+  flex-shrink: 0;
+}
+
+/* ---------- Body side ---------- */
+.certificate__eyebrow {
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+  margin-bottom: 0.75rem;
+}
+
+.certificate__title {
+  font-size: var(--fs-lg);
+  line-height: 1.1;
+  margin-bottom: 1.1rem;
+}
+
+.certificate__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 0 0 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px dashed var(--color-border-strong);
+}
+
+.certificate__meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.certificate__meta-row dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.certificate__meta-row dd {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--color-ink);
+}
+
+.certificate__description {
+  font-size: var(--fs-sm);
+  color: var(--color-ink-soft);
+  max-width: 48ch;
+  margin-bottom: 1rem;
+}
+
+.certificate__credential-id {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-muted);
+  margin-bottom: 1.75rem;
+}
+
+.certificate__credential-id span {
+  color: var(--color-ink-soft);
+}
+
+.certificate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.certificate__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--radius-pill);
+  transition: transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    background-image var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.certificate__btn--primary {
+  background: var(--btn-ink-fill);
+  box-shadow: var(--btn-ink-shadow);
+  color: var(--color-bg);
+}
+
+.certificate__btn--primary:hover,
+.certificate__btn--primary:focus-visible {
+  background: var(
+    --gradient-signature,
+    linear-gradient(135deg, #00c2ff, #8b5cf6)
+  );
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.certificate__btn--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-strong);
+}
+
+.certificate__btn--ghost:hover,
+.certificate__btn--ghost:focus-visible {
+  border-color: var(--color-signal);
+  color: var(--color-signal);
+  background: color-mix(in srgb, var(--color-signal) 8%, transparent);
+  transform: translateY(-1px);
+}
