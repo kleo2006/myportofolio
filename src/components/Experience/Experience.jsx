@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { EXPERIENCE } from '../../data/experience';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import GithubActivity from '../GithubActivity/GithubActivity';
+import GitHubActivity from "../GitHubActivity/GitHubActivity";
 import './Experience.css';
 
 function TimelineItem({ entry, index, isLast }) {
@@ -57,7 +57,7 @@ function Experience() {
             ))}
           </ol>
 
-          <GithubActivity />
+          <GitHubActivity />
         </div>
 
         <div className="experience__cta-row">

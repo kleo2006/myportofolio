@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import GitHubActivity from "../GitHubActivity/GitHubActivity";
+
 import "./GitHubActivity.css";
 
 const GITHUB_USERNAME = 'kleo2006';
@@ -19,7 +19,7 @@ function timeAgo(isoDate) {
   return `${months}mo ago`;
 }
 
-function GithubActivity() {
+function GitHubActivity() {
   const [status, setStatus] = useState('loading'); // loading | ready | error
   const [stats, setStats] = useState(null);
 
@@ -166,4 +166,4 @@ function GithubActivity() {
   );
 }
 
-export default memo(GithubActivity);
+export default memo(GitHubActivity);
