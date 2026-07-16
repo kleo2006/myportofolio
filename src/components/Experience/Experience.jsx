@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { EXPERIENCE } from '../../data/experience';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import GithubActivity from '../GithubActivity/GithubActivity';
+import GithubActivity from '../GitHubActivity/GithubActivity';
 import './Experience.css';
 
 function TimelineItem({ entry, index, isLast }) {
