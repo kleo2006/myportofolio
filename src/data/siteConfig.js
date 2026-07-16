@@ -8,7 +8,7 @@ export const SITE_CONFIG = {
   phone: '068 306 8605',
   github: 'https://github.com/kleo2006',
   linkedin: 'https://www.linkedin.com/in/kleo-fili-aa440036b',
-  resumeUrl: '/kleo-fili-cv.pdf',
+  resumeUrl: '/kleo-fili-cv_1.pdf',
   stack: ['React', 'Node.js', 'JavaScript', 'CSS', 'SQL'],
   currentlyBuilding: 'NorthWind AI chat widget',
 };
