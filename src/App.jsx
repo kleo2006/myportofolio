@@ -1,6 +1,6 @@
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
-import FAQ from './components/FAQ/FAQ';
+import FAQ from './components/FAQ/Faq';
 import About from './components/About/About';
 import Certificate from './components/Certificate/Certificate';
 import Skills from './components/Skills/Skills';
