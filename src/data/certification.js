@@ -11,5 +11,5 @@ export const CERTIFICATION = {
   description:
     'A 53-hour, project-based course covering the full stack — React, Angular, and Node.js — taught by Oak Academy.',
   image: '/certificates/udemy-fullstack-certificate.jpg',
-  pdfUrl: '/certificates/udemy-fullstack-certificate.pdf',
+  pdfUrl: '/certificates/udemycertificate.pdf',
 };
