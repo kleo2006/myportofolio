@@ -8,34 +8,17 @@ import './Contact.css';
 
 const INITIAL_FORM = { name: '', email: '', message: '' };
 
-// Reads the `hubspotutk` cookie set by the HubSpot tracking script (see index.html).
-// Passing this as `hutk` in the submission context tells HubSpot the visitor is a
-// tracked, legitimate browsing session — without it, API submissions (especially
-// from a fresh production domain with no prior HubSpot cookie) are more likely to
-// be silently routed to HubSpot's spam-filtered submissions bucket instead of
-// creating a normal contact, even though the API still returns a 200 success.
-function getHubspotCookie() {
-  const match = document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/);
-  return match ? match[1] : undefined;
-}
-
-// From your HubSpot account: Settings > Marketing > Forms > (your form) > Embed code,
-// or the form's URL when editing it. Portal ID is your HubSpot account/hub ID.
-const HUBSPOT_PORTAL_ID = import.meta.env.VITE_HUBSPOT_PORTAL_ID;
-const HUBSPOT_FORM_ID = import.meta.env.VITE_HUBSPOT_FORM_ID;
-const HUBSPOT_ENDPOINT = `https://api-eu1.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
-
-// Fails loudly at load time if the env vars didn't make it into the build,
-// instead of silently POSTing to ".../undefined/undefined" later.
-if (!HUBSPOT_PORTAL_ID || !HUBSPOT_FORM_ID) {
-  console.error(
-    '[Contact] Missing HubSpot env vars. VITE_HUBSPOT_PORTAL_ID:',
-    HUBSPOT_PORTAL_ID,
-    'VITE_HUBSPOT_FORM_ID:',
-    HUBSPOT_FORM_ID,
-    '— check Cloudflare Pages → Settings → Environment variables (Production scope), then redeploy.'
-  );
-}
+// Submits to our own Cloudflare Pages Function (functions/api/contact.js),
+// which authenticates to HubSpot server-side with a Private App token.
+//
+// We used to POST directly to HubSpot's public Forms Submission API from
+// the browser. That endpoint is anonymous by design, so HubSpot spam-filters
+// submissions partly based on the sending domain — a *.pages.dev domain
+// can't be verified in HubSpot, so every submission from it landed in
+// "Spam submissions" as "Unregistered Site Domain", even though the request
+// itself returned 200 OK. Routing through our own authenticated backend
+// sidesteps that anonymous-submission spam pipeline entirely.
+const CONTACT_ENDPOINT = '/api/contact';
 
 function Contact() {
   const [infoRef, infoVisible] = useScrollReveal();
@@ -63,20 +46,13 @@ function Contact() {
     setStatus('submitting');
 
     try {
-      const response = await fetch(HUBSPOT_ENDPOINT, {
+      const response = await fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fields: [
-            { name: 'firstname', value: values.name },
-            { name: 'email', value: values.email },
-            { name: 'message', value: values.message },
-          ],
-          context: {
-            pageUri: window.location.href,
-            pageName: document.title,
-            hutk: getHubspotCookie(),
-          },
+          name: values.name,
+          email: values.email,
+          message: values.message,
         }),
       });
 
@@ -84,19 +60,18 @@ function Contact() {
 
       if (!response.ok) {
         console.error(
-          '[Contact] HubSpot submission failed.',
+          '[Contact] Submission failed.',
           'Status:', response.status,
-          'URL:', HUBSPOT_ENDPOINT,
           'Response:', responseBody
         );
-        throw new Error(responseBody?.message || `HubSpot returned ${response.status}`);
+        throw new Error(responseBody?.error || `Submission failed with status ${response.status}`);
       }
 
-      console.log('[Contact] HubSpot submission succeeded:', responseBody);
+      console.log('[Contact] Submission succeeded:', responseBody);
       setStatus('success');
       setValues(INITIAL_FORM);
     } catch (error) {
-      console.error('HubSpot form submission failed:', error);
+      console.error('Contact form submission failed:', error);
       setStatus('error');
     }
   };
