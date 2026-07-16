@@ -1,7 +1,7 @@
 import { memo, useState } from 'react';
 import { FAQ_ITEMS } from '../../data/faq';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import './FAQ.css';
+import './Faq.css';
 
 function Chevron({ open }) {
   return (
