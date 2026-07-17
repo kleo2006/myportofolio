@@ -189,18 +189,22 @@
   transform: translateY(-2px);
 }
 
-/* ---------- Download CV (ghost) ---------- */
+/* ---------- Download CV ----------
+   Filled with the site's signature gradient (same cyan → violet used on
+   hover states across Projects/Certificate/Experience/this button's own
+   sibling), rather than a flat ghost outline — reads as a real second
+   call-to-action instead of a muted afterthought next to "View projects". */
 .hero__btn--ghost {
-  background: transparent;
-  color: var(--color-ink);
-  border: 1px solid var(--color-border-strong);
+  background: var(--gradient-signature, linear-gradient(135deg, #00c2ff, #8b5cf6));
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 16px -4px rgba(139, 92, 246, 0.45);
 }
 
 .hero__btn--ghost:hover,
 .hero__btn--ghost:focus-visible {
-  border-color: var(--color-violet, #8b5cf6);
-  color: var(--color-violet, #8b5cf6);
-  background: color-mix(in srgb, var(--color-violet, #8b5cf6) 8%, transparent);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px -6px rgba(139, 92, 246, 0.55);
   transform: translateY(-2px);
 }
 

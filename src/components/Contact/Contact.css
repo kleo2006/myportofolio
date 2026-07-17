@@ -33,21 +33,28 @@
   border-color: var(--color-accent);
 }
 
+/* Filled with the same signature gradient as the Hero "Download CV" button
+   for consistency — this used to be a plain outline, which read as low-
+   priority next to the bold "Send message" button further down the page. */
 .contact__resume {
   display: inline-flex;
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--color-ink);
-  border: 1px solid var(--color-border-strong);
+  color: #ffffff;
+  background: var(--gradient-signature, linear-gradient(135deg, #00c2ff, #8b5cf6));
+  border: 1px solid transparent;
+  box-shadow: 0 4px 16px -4px rgba(139, 92, 246, 0.45);
   padding: 0.7rem 1.4rem;
   border-radius: var(--radius-pill);
   margin-bottom: 2rem;
-  transition: border-color var(--duration-fast) var(--ease-out),
+  transition: filter var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
 }
 
 .contact__resume:hover {
-  border-color: var(--color-ink);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px -6px rgba(139, 92, 246, 0.55);
   transform: translateY(-1px);
 }
 
