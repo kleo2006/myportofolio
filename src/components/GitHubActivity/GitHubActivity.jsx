@@ -3,6 +3,12 @@ import { memo, useEffect, useState } from 'react';
 import "./GitHubActivity.css";
 
 const GITHUB_USERNAME = 'kleo2006';
+const CACHE_KEY = `github-activity-cache:${GITHUB_USERNAME}`;
+// GitHub's unauthenticated REST API allows only 60 requests/hour per IP.
+// Caching for 30 min means at most ~2 fetches/hour per visitor instead
+// of 2 fetches on every single page load — which is what was blowing
+// through the budget and showing the "unavailable" fallback.
+const CACHE_TTL_MS = 30 * 60 * 1000;
 
 // Cycles through the same signature spectrum used for tech chips
 // elsewhere, so this reads as part of the same design system.
@@ -19,6 +25,23 @@ function timeAgo(isoDate) {
   return `${months}mo ago`;
 }
 
+function readCache() {
+  try {
+    return JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(data) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch {
+    // localStorage unavailable (private browsing, quota, etc.) — safe to ignore,
+    // it just means this visit won't benefit from caching.
+  }
+}
+
 function GitHubActivity() {
   const [status, setStatus] = useState('loading'); // loading | ready | error
   const [stats, setStats] = useState(null);
@@ -27,6 +50,17 @@ function GitHubActivity() {
     let cancelled = false;
 
     async function load() {
+      // Serve cached data first if it's still fresh — avoids re-fetching
+      // on every page load and burning through GitHub's rate limit.
+      const cached = readCache();
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+        if (!cancelled) {
+          setStats(cached.data);
+          setStatus('ready');
+        }
+        return;
+      }
+
       try {
         const [profileRes, reposRes] = await Promise.all([
           fetch(`https://api.github.com/users/${GITHUB_USERNAME}`),
@@ -51,23 +85,35 @@ function GitHubActivity() {
 
         const lastPushed = repos[0];
 
+        const data = {
+          publicRepos: profile.public_repos,
+          followers: profile.followers,
+          profileUrl: profile.html_url,
+          topLanguages,
+          lastPushed: lastPushed
+            ? {
+                name: lastPushed.name,
+                url: lastPushed.html_url,
+                updatedAt: lastPushed.pushed_at,
+              }
+            : null,
+        };
+
+        writeCache(data);
+
         if (!cancelled) {
-          setStats({
-            publicRepos: profile.public_repos,
-            followers: profile.followers,
-            profileUrl: profile.html_url,
-            topLanguages,
-            lastPushed: lastPushed
-              ? {
-                  name: lastPushed.name,
-                  url: lastPushed.html_url,
-                  updatedAt: lastPushed.pushed_at,
-                }
-              : null,
-          });
+          setStats(data);
           setStatus('ready');
         }
       } catch {
+        // On failure (often a rate limit), fall back to any stale cache
+        // rather than showing the "unavailable" message.
+        const stale = readCache();
+        if (stale && !cancelled) {
+          setStats(stale.data);
+          setStatus('ready');
+          return;
+        }
         if (!cancelled) setStatus('error');
       }
     }

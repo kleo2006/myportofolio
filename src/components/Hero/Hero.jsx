@@ -55,11 +55,11 @@ function Hero() {
           </div>
 
           <ul className="hero__panel-list">
-            {FOCUS_AREAS.map((area, index) => (
+            {FOCUS_AREAS.map((area) => (
               <li className="hero__panel-item" key={area.label}>
                 <span
                   className="hero__panel-dot"
-                  style={{ '--i': index }}
+                  style={{ background: area.color }}
                   aria-hidden="true"
                 />
                 <div>

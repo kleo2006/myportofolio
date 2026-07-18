@@ -38,7 +38,11 @@ function FAQItem({ item, index, isOpen, onToggle }) {
           aria-controls={panelId}
           onClick={() => onToggle(index)}
         >
-          <span className="faq__dot" aria-hidden="true" />
+          <span
+            className="faq__dot"
+            style={{ background: item.color }}
+            aria-hidden="true"
+          />
           <span className="faq__question-text">{item.question}</span>
           <Chevron open={isOpen} />
         </button>

@@ -68,15 +68,6 @@
   font-weight: inherit;
 }
 
-/* Four-color dot cycling through the site's signature spectrum — the
-   same connective device used for tech chips elsewhere, applied here so
-   the FAQ list reads as part of the same system rather than a bolted-on
-   generic accordion. */
-.faq__item:nth-child(4n + 1) .faq__dot { background: var(--color-accent); }
-.faq__item:nth-child(4n + 2) .faq__dot { background: var(--color-violet); }
-.faq__item:nth-child(4n + 3) .faq__dot { background: var(--color-warm); }
-.faq__item:nth-child(4n + 4) .faq__dot { background: var(--color-signal); }
-
 .faq__question {
   display: flex;
   align-items: center;
@@ -94,11 +85,17 @@
   color: var(--color-accent);
 }
 
+/* Color now comes inline from each item's `color` field in
+   data/faq.js (via the `background` inline style set in Faq.jsx),
+   rather than being assigned by list position. This keeps each
+   question's dot color fixed and predictable even if items are
+   reordered or new ones are added later. */
 .faq__dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
+  background: var(--color-accent);
   transition: transform var(--duration-fast) var(--ease-out);
 }
 

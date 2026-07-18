@@ -175,10 +175,8 @@
   color: var(--color-bg);
 }
 
-/* Explicit blue → purple gradient on hover, with a hard-coded fallback
-   so it never silently falls back to black if --gradient-signature
-   (or the tokens it's built from) is missing — same fix applied to
-   the Projects section buttons. */
+/* Emerald hover — kept distinct from the Download CV button's blue fill
+   next to it, so the two calls-to-action read as visually separate. */
 .hero__btn--primary:hover,
 .hero__btn--primary:focus-visible {
   background: linear-gradient(135deg, #10b981, #047857);
@@ -187,10 +185,8 @@
 }
 
 /* ---------- Download CV ----------
-   Filled with the site's signature gradient (same cyan → violet used on
-   hover states across Projects/Certificate/Experience/this button's own
-   sibling), rather than a flat ghost outline — reads as a real second
-   call-to-action instead of a muted afterthought next to "View projects". */
+   Solid blue fill with white text — a real second call-to-action next
+   to "View projects" rather than a muted ghost outline. */
 .hero__btn--ghost {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: #ffffff;
@@ -204,6 +200,7 @@
   box-shadow: 0 8px 24px -6px rgba(37, 99, 235, 0.6);
   transform: translateY(-2px);
 }
+
 .hero__stack {
   display: flex;
   flex-wrap: wrap;
@@ -263,8 +260,12 @@
   gap: 0.85rem;
 }
 
+/* Color now comes inline from each item's `color` field in
+   data/focusAreas.js (via the `background` inline style set in
+   Hero.jsx), rather than being assigned by list position. This keeps
+   each focus area's color fixed and predictable even if items are
+   reordered or new ones are added later. */
 .hero__panel-dot {
-  --i: 0;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -272,11 +273,6 @@
   flex-shrink: 0;
   background: var(--color-accent);
 }
-
-.hero__panel-item:nth-child(4n + 1) .hero__panel-dot { background: var(--color-accent); }
-.hero__panel-item:nth-child(4n + 2) .hero__panel-dot { background: var(--color-violet); }
-.hero__panel-item:nth-child(4n + 3) .hero__panel-dot { background: var(--color-warm); }
-.hero__panel-item:nth-child(4n + 4) .hero__panel-dot { background: var(--color-signal); }
 
 .hero__panel-label {
   font-size: var(--fs-sm);
