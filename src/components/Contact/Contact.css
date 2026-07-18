@@ -160,6 +160,40 @@
   border-color: #e0554f;
 }
 
+.contact__field--checkbox {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.contact__field--checkbox input[type='checkbox'] {
+  /* Undo the text-input styling inherited from the shared
+     `.contact__field input` rule above — a checkbox needs its native
+     size/shape, not textbox padding and a full border box. */
+  appearance: auto;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  padding: 0;
+  border: none;
+  background: none;
+  accent-color: var(--color-accent);
+}
+
+.contact__field--checkbox input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.contact__field--checkbox label {
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+}
+
 .contact__error {
   font-size: var(--fs-xs);
   color: #e0554f;
