@@ -17,12 +17,12 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <FAQ />
         <Projects />
         <About />
         <Certificate />
         <Skills />
         <Experience />
+        <FAQ/>
         <Contact />
       </main>
       <Footer />
