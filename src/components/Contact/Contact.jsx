@@ -6,11 +6,7 @@ import { useScrollReveal } from '../../hooks/useScrollReveal';
 import SocialIcon from '../UI/SocialIcon/SocialIcon';
 import './Contact.css';
 
-// A hidden field real visitors never see or fill in. Basic form-filling
-// bots typically fill every input they find; if this one comes back
-// non-empty, we silently drop the submission server-side instead of
-// creating a real HubSpot contact / sending a real email for it.
-const INITIAL_FORM = { name: '', email: '', message: '', company: '', newsletter: false };
+const INITIAL_FORM = { name: '', email: '', message: '' };
 
 // Submits to our own Cloudflare Pages Function (functions/api/contact.js),
 // which authenticates to HubSpot server-side with a Private App token.
@@ -31,11 +27,10 @@ function Contact() {
   const [values, setValues] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle'); // idle | submitting | success | error
-  const [subscribedOnSuccess, setSubscribedOnSuccess] = useState(false);
 
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setValues((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
+    const { name, value } = event.target;
+    setValues((current) => ({ ...current, [name]: value }));
     if (errors[name]) {
       setErrors((current) => ({ ...current, [name]: undefined }));
     }
@@ -46,14 +41,7 @@ function Contact() {
 
     const validationErrors = validateContactForm(values);
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) {
-      // Focus the first invalid field so screen-reader users hear its
-      // label/error immediately instead of having to re-navigate the
-      // whole form to discover what's wrong.
-      const firstErrorField = Object.keys(validationErrors)[0];
-      document.getElementById(firstErrorField)?.focus();
-      return;
-    }
+    if (Object.keys(validationErrors).length > 0) return;
 
     setStatus('submitting');
 
@@ -65,8 +53,6 @@ function Contact() {
           name: values.name,
           email: values.email,
           message: values.message,
-          newsletter: values.newsletter,
-          company: values.company, // honeypot — must stay empty
         }),
       });
 
@@ -82,7 +68,6 @@ function Contact() {
       }
 
       console.log('[Contact] Submission succeeded:', responseBody);
-      setSubscribedOnSuccess(values.newsletter);
       setStatus('success');
       setValues(INITIAL_FORM);
     } catch (error) {
@@ -139,23 +124,6 @@ function Contact() {
           onSubmit={handleSubmit}
           noValidate
         >
-          {/* Honeypot — real users never see this (aria-hidden + tabIndex
-              -1 + visually hidden), so any submission with this filled in
-              is almost certainly a bot. Not a name a legit form would use,
-              to avoid autofill collisions. */}
-          <div className="sr-only" aria-hidden="true">
-            <label htmlFor="company">Company</label>
-            <input
-              id="company"
-              name="company"
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              value={values.company}
-              onChange={handleChange}
-            />
-          </div>
-
           <div className="contact__field">
             <label htmlFor="name">Name</label>
             <input
@@ -210,19 +178,6 @@ function Contact() {
             )}
           </div>
 
-          <div className="contact__field contact__field--checkbox">
-            <input
-              id="newsletter"
-              name="newsletter"
-              type="checkbox"
-              checked={values.newsletter}
-              onChange={handleChange}
-            />
-            <label htmlFor="newsletter">
-              Keep me posted on new projects and availability
-            </label>
-          </div>
-
           <button
             type="submit"
             className="contact__submit"
@@ -233,9 +188,7 @@ function Contact() {
 
           <div aria-live="polite" className="contact__status">
             {status === 'success' &&
-              (subscribedOnSuccess
-                ? 'Thanks — your message is in, and you\u2019re on the list for updates.'
-                : 'Thanks — your message is in. I\u2019ll get back to you soon.')}
+              'Thanks — your message is in. I\u2019ll get back to you soon.'}
             {status === 'error' &&
               'Something went wrong sending that. Try the email link instead.'}
           </div>
