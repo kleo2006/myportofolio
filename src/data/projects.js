@@ -1,6 +1,6 @@
 import northwindImg from '../assets/images/northwind.png';
 import tomatoImg from '../assets/images/tomato1.png';
-import movieImg from '../assets/images/movie-app.png';
+import movieImg from '../assets/images/cinema1.png';
 
 export const PROJECTS = [
   {
@@ -34,18 +34,18 @@ export const PROJECTS = [
     githubUrl: 'https://github.com/kleo2006/food-delivery',
   },
   {
-    title: 'Movie Discovery App',
+    title: 'Cinema — Film Discovery',
     description:
-      'A dark-themed movie browser built on the TMDB API — search, trending titles, and responsive movie cards, with DNS-level troubleshooting to work around regional ISP blocking.',
-    tech: ['React', 'TMDB API', 'CSS Grid'],
+      'A cinematic film browser built on the TMDB API — a featured hero, trending and top-rated shelves, filterable discovery, search, a personal watchlist and an in-site player. TMDB requests run through a Cloudflare Pages Function, so the API key stays server-side and the site loads on networks that block TMDB.',
+    tech: ['React', 'React Router', 'TMDB API', 'Cloudflare Pages Functions', 'hls.js'],
     features: [
-      'Live search with debounced queries',
-      'Trending & responsive movie cards',
-      'Dark theme throughout',
+      'Debounced search, URL-shareable Discover filters and genre browsing',
+      'Watchlist and resume progress saved on-device',
+      'Edge proxy with caching keeps the API key private',
     ],
     accent: '',
     image: movieImg,
-    liveUrl: 'https://movie-website-xxd.pages.dev',
-    githubUrl: 'https://github.com/kleo2006/movie-website',
+    liveUrl: 'https://cinema-website.pages.dev',
+    githubUrl: 'https://github.com/kleo2006/cinema-website',
   },
 ];
